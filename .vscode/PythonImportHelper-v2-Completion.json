@@ -107,16 +107,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def suppress_output():\n    \"\"\"Temporarily suppress stdout/stderr to hide library messages.\"\"\"\n    with open(os.devnull, \"w\") as devnull:\n        old_stdout, old_stderr = sys.stdout, sys.stderr\n        sys.stdout, sys.stderr = devnull, devnull\n        try:\n            yield\n        finally:\n            sys.stdout, sys.stderr = old_stdout, old_stderr\n# =========================================",
-        "detail": "p2w_convertor.cli",
-        "documentation": {}
-    },
-    {
-        "label": "get_input_output_paths",
-        "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def get_input_output_paths(args, default_ext):\n    \"\"\"Prompt for input/output file paths if not given.\"\"\"\n    if not args.input:\n        args.input = input(\"📄 Enter input file path: \").strip()\n    # Validate input path\n    if not os.path.exists(args.input):\n        print(\"❌ Error: Input file not found. Please check the path and try again.\\n\")\n        sys.exit(1)\n    input_dir = os.path.dirname(args.input)\n    input_name = os.path.splitext(os.path.basename(args.input))[0]",
+        "peekOfCode": "def suppress_output():\n    \"\"\"Temporarily suppress stdout/stderr to hide unwanted messages.\"\"\"\n    with open(os.devnull, \"w\") as devnull:\n        old_stdout, old_stderr = sys.stdout, sys.stderr\n        sys.stdout, sys.stderr = devnull, devnull\n        try:\n            yield\n        finally:\n            sys.stdout, sys.stderr = old_stdout, old_stderr\n# =========================================",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -125,7 +116,43 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a single progress bar using '===' style.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=(\"=\", \" \"),   # ✅ fixed tuple style — prevents ZeroDivisionError\n        leave=False,",
+        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a single, smooth progress bar.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=(\"=\", \" \"),\n        leave=False,",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "get_input_output_paths",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def get_input_output_paths(default_ext, input_prompt, output_prompt):\n    \"\"\"Ask user for input and output file paths.\"\"\"\n    inp = input(input_prompt).strip()\n    if not os.path.exists(inp):\n        print(\"❌ Error: Input file not found.\")\n        sys.exit(1)\n    input_dir = os.path.dirname(inp)\n    input_name = os.path.splitext(os.path.basename(inp))[0]\n    out_name = input(output_prompt.format(input_name=input_name)).strip()\n    if not out_name:",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "get_folder_and_files",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def get_folder_and_files(extension):\n    \"\"\"Ask for folder path and get all files matching extension.\"\"\"\n    folder = input(\"📁 Enter folder path containing files: \").strip()\n    if not os.path.isdir(folder):\n        print(\"❌ Error: Invalid folder path.\")\n        sys.exit(1)\n    files = [f for f in os.listdir(folder) if f.lower().endswith(extension)]\n    if not files:\n        print(f\"⚠️ No {extension} files found in the specified folder.\")\n        sys.exit(0)",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "batch_convert",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def batch_convert(task_name, extension, output_ext, func):\n    folder, files = get_folder_and_files(extension)\n    print(f\"🔄 Starting batch {task_name} conversion...\\n\")\n    for f in files:\n        inp = os.path.join(folder, f)\n        out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)\n        show_progress(f\"{f[:25]} → {output_ext}\", func, inp, out)\n    print(f\"\\n✅ Batch conversion complete! Files saved in: {folder}\\n\")\n# =========================================\n# 🚀 Unified conversion handler",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "handle_conversion",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def handle_conversion(task_name, input_ext, output_ext, func):\n    \"\"\"Ask user for mode: single or batch.\"\"\"\n    print(\"\\n🔢 Select conversion mode:\")\n    print(\"1️⃣  Single file conversion\")\n    print(\"2️⃣  Batch folder conversion\\n\")\n    choice = input(\"👉 Enter your choice (1 or 2): \").strip()\n    if choice == \"1\":\n        inp, out = get_input_output_paths(\n            output_ext,\n            input_prompt=f\"📄 Enter input {input_ext} file path: \",",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -134,7 +161,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose a conversion type\")\n    # Word to PDF\n    wp = subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) → PDF\")\n    wp.add_argument(\"input\", nargs=\"?\", help=\"Path to the Word file\")\n    wp.add_argument(\"output\", nargs=\"?\", help=\"Path to save the converted PDF\")",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose conversion type\")\n    subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) → PDF\")\n    subparsers.add_parser(\"pdf2word\", help=\"Convert PDF → Word (.docx)\")\n    subparsers.add_parser(\"xlsx2csv\", help=\"Convert Excel (.xlsx) → CSV\")\n    subparsers.add_parser(\"csv2xlsx\", help=\"Convert CSV → Excel (.xlsx)\")",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
