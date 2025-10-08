@@ -19,15 +19,24 @@ def get_input_output_paths(args, default_ext):
 
 
 def show_progress(task_name, func, *args, **kwargs):
-    """Display a progress bar while performing the conversion."""
-    with tqdm(total=100, desc=f"🔄 {task_name}", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}") as pbar:
-        # Simulate progress in 4 steps (25%, 50%, 75%, 100%)
-        for _ in range(4):
-            time.sleep(0.2)
-            pbar.update(25)
+    """Display a clean progress bar while performing conversion."""
+    print(f"\n🔄 Starting {task_name} conversion...\n")
+
+    with tqdm(
+        total=100,
+        desc=f"{task_name}",
+        ncols=70,
+        bar_format="{desc}: [{bar}] {percentage:3.0f}%",
+        ascii="=>"
+    ) as pbar:
+        for _ in range(10):
+            time.sleep(0.1)  # simulate small steps
+            pbar.update(10)
         func(*args, **kwargs)
         pbar.n = 100
         pbar.refresh()
+
+    print(f"✅ Conversion complete! Saved to: {args[1]}\n")
 
 
 def main():
@@ -59,21 +68,22 @@ def main():
 
     args = parser.parse_args()
 
+    # Dispatcher
     if args.command == "word2pdf":
-        input_file, output_file = get_input_output_paths(args, ".pdf")
-        show_progress("Word → PDF", converters.word_to_pdf, input_file, output_file)
+        inp, out = get_input_output_paths(args, ".pdf")
+        show_progress("Word → PDF", converters.word_to_pdf, inp, out)
 
     elif args.command == "pdf2word":
-        input_file, output_file = get_input_output_paths(args, ".docx")
-        show_progress("PDF → Word", converters.pdf_to_word, input_file, output_file)
+        inp, out = get_input_output_paths(args, ".docx")
+        show_progress("PDF → Word", converters.pdf_to_word, inp, out)
 
     elif args.command == "xlsx2csv":
-        input_file, output_file = get_input_output_paths(args, ".csv")
-        show_progress("Excel → CSV", converters.xlsx_to_csv, input_file, output_file)
+        inp, out = get_input_output_paths(args, ".csv")
+        show_progress("Excel → CSV", converters.xlsx_to_csv, inp, out)
 
     elif args.command == "csv2xlsx":
-        input_file, output_file = get_input_output_paths(args, ".xlsx")
-        show_progress("CSV → Excel", converters.csv_to_xlsx, input_file, output_file)
+        inp, out = get_input_output_paths(args, ".xlsx")
+        show_progress("CSV → Excel", converters.csv_to_xlsx, inp, out)
 
     else:
         parser.print_help()

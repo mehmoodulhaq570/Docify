@@ -98,7 +98,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a progress bar while performing the conversion.\"\"\"\n    with tqdm(total=100, desc=f\"🔄 {task_name}\", ncols=80, bar_format=\"{l_bar}{bar}| {n_fmt}/{total_fmt}\") as pbar:\n        # Simulate progress in 4 steps (25%, 50%, 75%, 100%)\n        for _ in range(4):\n            time.sleep(0.2)\n            pbar.update(25)\n        func(*args, **kwargs)\n        pbar.n = 100\n        pbar.refresh()",
+        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a clean progress bar while performing conversion.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=\"=>\"\n    ) as pbar:",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
