@@ -18,11 +18,21 @@
         "documentation": {}
     },
     {
-        "label": "tqdm",
-        "importPath": "tqdm",
-        "description": "tqdm",
+        "label": "sys",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "tqdm",
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "contextlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "contextlib",
+        "description": "contextlib",
+        "detail": "contextlib",
         "documentation": {}
     },
     {
@@ -32,6 +42,14 @@
         "importPath": "time",
         "description": "time",
         "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "tqdm",
+        "importPath": "tqdm",
+        "description": "tqdm",
+        "isExtraImport": true,
+        "detail": "tqdm",
         "documentation": {}
     },
     {
@@ -85,11 +103,20 @@
         "documentation": {}
     },
     {
+        "label": "suppress_output",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def suppress_output():\n    \"\"\"Temporarily suppress stdout/stderr to hide library messages.\"\"\"\n    with open(os.devnull, \"w\") as devnull:\n        old_stdout, old_stderr = sys.stdout, sys.stderr\n        sys.stdout, sys.stderr = devnull, devnull\n        try:\n            yield\n        finally:\n            sys.stdout, sys.stderr = old_stdout, old_stderr\n# =========================================",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
         "label": "get_input_output_paths",
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def get_input_output_paths(args, default_ext):\n    \"\"\"Get input/output file paths interactively if not provided.\"\"\"\n    if not args.input:\n        args.input = input(\"📄 Enter input file path: \").strip()\n    if not args.output:\n        base, _ = os.path.splitext(args.input)\n        args.output = base + default_ext\n        print(f\"💾 Output will be saved as: {args.output}\")\n    return args.input, args.output\ndef show_progress(task_name, func, *args, **kwargs):",
+        "peekOfCode": "def get_input_output_paths(args, default_ext):\n    \"\"\"Prompt for input/output file paths if not given.\"\"\"\n    if not args.input:\n        args.input = input(\"📄 Enter input file path: \").strip()\n    # Validate input path\n    if not os.path.exists(args.input):\n        print(\"❌ Error: Input file not found. Please check the path and try again.\\n\")\n        sys.exit(1)\n    input_dir = os.path.dirname(args.input)\n    input_name = os.path.splitext(os.path.basename(args.input))[0]",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -98,7 +125,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a clean progress bar while performing conversion.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=\"=>\"\n    ) as pbar:",
+        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a single progress bar using '===' style.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=(\"=\", \" \"),   # ✅ fixed tuple style — prevents ZeroDivisionError\n        leave=False,",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -107,7 +134,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word <-> PDF and Excel <-> CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose a conversion type\")\n    # Word to PDF\n    wp = subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) to PDF\")\n    wp.add_argument(\"input\", nargs=\"?\", help=\"Path to the Word file\")\n    wp.add_argument(\"output\", nargs=\"?\", help=\"Path to save the converted PDF\")",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose a conversion type\")\n    # Word to PDF\n    wp = subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) → PDF\")\n    wp.add_argument(\"input\", nargs=\"?\", help=\"Path to the Word file\")\n    wp.add_argument(\"output\", nargs=\"?\", help=\"Path to save the converted PDF\")",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
