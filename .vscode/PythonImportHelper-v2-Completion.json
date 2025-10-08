@@ -1,0 +1,150 @@
+[
+    {
+        "label": "argparse",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "argparse",
+        "description": "argparse",
+        "detail": "argparse",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "tqdm",
+        "importPath": "tqdm",
+        "description": "tqdm",
+        "isExtraImport": true,
+        "detail": "tqdm",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "docx",
+        "description": "docx",
+        "isExtraImport": true,
+        "detail": "docx",
+        "documentation": {}
+    },
+    {
+        "label": "convert",
+        "importPath": "docx2pdf",
+        "description": "docx2pdf",
+        "isExtraImport": true,
+        "detail": "docx2pdf",
+        "documentation": {}
+    },
+    {
+        "label": "pdfplumber",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pdfplumber",
+        "description": "pdfplumber",
+        "detail": "pdfplumber",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "find_packages",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "get_input_output_paths",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def get_input_output_paths(args, default_ext):\n    \"\"\"Get input/output file paths interactively if not provided.\"\"\"\n    if not args.input:\n        args.input = input(\"📄 Enter input file path: \").strip()\n    if not args.output:\n        base, _ = os.path.splitext(args.input)\n        args.output = base + default_ext\n        print(f\"💾 Output will be saved as: {args.output}\")\n    return args.input, args.output\ndef show_progress(task_name, func, *args, **kwargs):",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "show_progress",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a progress bar while performing the conversion.\"\"\"\n    with tqdm(total=100, desc=f\"🔄 {task_name}\", ncols=80, bar_format=\"{l_bar}{bar}| {n_fmt}/{total_fmt}\") as pbar:\n        # Simulate progress in 4 steps (25%, 50%, 75%, 100%)\n        for _ in range(4):\n            time.sleep(0.2)\n            pbar.update(25)\n        func(*args, **kwargs)\n        pbar.n = 100\n        pbar.refresh()",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "p2w_convertor.cli",
+        "description": "p2w_convertor.cli",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word <-> PDF and Excel <-> CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose a conversion type\")\n    # Word to PDF\n    wp = subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) to PDF\")\n    wp.add_argument(\"input\", nargs=\"?\", help=\"Path to the Word file\")\n    wp.add_argument(\"output\", nargs=\"?\", help=\"Path to save the converted PDF\")",
+        "detail": "p2w_convertor.cli",
+        "documentation": {}
+    },
+    {
+        "label": "word_to_pdf",
+        "kind": 2,
+        "importPath": "p2w_convertor.converters",
+        "description": "p2w_convertor.converters",
+        "peekOfCode": "def word_to_pdf(input_file, output_file):\n    convert(input_file, output_file)\ndef pdf_to_word(input_file, output_file):\n    doc = Document()\n    with pdfplumber.open(input_file) as pdf:\n        for page in pdf.pages:\n            text = page.extract_text() or \"\"\n            doc.add_paragraph(text)\n    doc.save(output_file)\ndef xlsx_to_csv(input_file, output_file):",
+        "detail": "p2w_convertor.converters",
+        "documentation": {}
+    },
+    {
+        "label": "pdf_to_word",
+        "kind": 2,
+        "importPath": "p2w_convertor.converters",
+        "description": "p2w_convertor.converters",
+        "peekOfCode": "def pdf_to_word(input_file, output_file):\n    doc = Document()\n    with pdfplumber.open(input_file) as pdf:\n        for page in pdf.pages:\n            text = page.extract_text() or \"\"\n            doc.add_paragraph(text)\n    doc.save(output_file)\ndef xlsx_to_csv(input_file, output_file):\n    df = pd.read_excel(input_file)\n    df.to_csv(output_file, index=False)",
+        "detail": "p2w_convertor.converters",
+        "documentation": {}
+    },
+    {
+        "label": "xlsx_to_csv",
+        "kind": 2,
+        "importPath": "p2w_convertor.converters",
+        "description": "p2w_convertor.converters",
+        "peekOfCode": "def xlsx_to_csv(input_file, output_file):\n    df = pd.read_excel(input_file)\n    df.to_csv(output_file, index=False)\ndef csv_to_xlsx(input_file, output_file):\n    df = pd.read_csv(input_file)\n    df.to_excel(output_file, index=False)",
+        "detail": "p2w_convertor.converters",
+        "documentation": {}
+    },
+    {
+        "label": "csv_to_xlsx",
+        "kind": 2,
+        "importPath": "p2w_convertor.converters",
+        "description": "p2w_convertor.converters",
+        "peekOfCode": "def csv_to_xlsx(input_file, output_file):\n    df = pd.read_csv(input_file)\n    df.to_excel(output_file, index=False)",
+        "detail": "p2w_convertor.converters",
+        "documentation": {}
+    }
+]
