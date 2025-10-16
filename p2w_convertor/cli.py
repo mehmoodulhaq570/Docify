@@ -1,8 +1,10 @@
+
 import argparse
 import os
 import sys
 import contextlib
 import time
+import logging
 from tqdm import tqdm
 from . import converters
 
@@ -25,6 +27,9 @@ def suppress_output():
 # =========================================
 # 📊 Utility: Progress bar
 # =========================================
+# =========================================
+# 📊 Utility: Progress bar
+# =========================================
 def show_progress(task_name, func, *args, **kwargs):
     """Display a single, smooth progress bar."""
     print(f"\n🔄 Starting {task_name} conversion...\n")
@@ -39,11 +44,16 @@ def show_progress(task_name, func, *args, **kwargs):
         for _ in range(20):
             time.sleep(0.05)
             pbar.update(5)
-        with suppress_output():
-            func(*args, **kwargs)
-        pbar.n = 100
-        pbar.refresh()
-    print(f"\n✅ Conversion complete! Saved to: {args[1]}\n")
+        try:
+            with suppress_output():
+                func(*args, **kwargs)
+            pbar.n = 100
+            pbar.refresh()
+            print(f"\n✅ Conversion complete! Saved to: {args[1]}\n")
+            logging.info(f"Conversion complete: {args[0]} -> {args[1]}")
+        except Exception as e:
+            print(f"\n❌ Conversion failed: {e}\n")
+            logging.error(f"Conversion failed: {args[0]} -> {args[1]} | Error: {e}")
 
 
 # =========================================
@@ -90,20 +100,28 @@ def get_folder_and_files(extension):
 # =========================================
 # 🧠 Generic batch converter
 # =========================================
-def batch_convert(task_name, extension, output_ext, func):
+def batch_convert(task_name, extension, output_ext, func, **kwargs):
     folder, files = get_folder_and_files(extension)
     print(f"🔄 Starting batch {task_name} conversion...\n")
+    errors = []
     for f in files:
         inp = os.path.join(folder, f)
         out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)
-        show_progress(f"{f[:25]} → {output_ext}", func, inp, out)
+        try:
+            show_progress(f"{f[:25]} → {output_ext}", func, inp, out, **kwargs)
+        except Exception as e:
+            errors.append((f, str(e)))
+    if errors:
+        print("\n❌ Some files failed to convert:")
+        for fname, err in errors:
+            print(f"  - {fname}: {err}")
     print(f"\n✅ Batch conversion complete! Files saved in: {folder}\n")
 
 
 # =========================================
 # 🚀 Unified conversion handler
 # =========================================
-def handle_conversion(task_name, input_ext, output_ext, func):
+def handle_conversion(task_name, input_ext, output_ext, func, **kwargs):
     """Ask user for mode: single or batch."""
     print("\n🔢 Select conversion mode:")
     print("1️⃣  Single file conversion")
@@ -117,10 +135,10 @@ def handle_conversion(task_name, input_ext, output_ext, func):
             input_prompt=f"📄 Enter input {input_ext} file path: ",
             output_prompt="📝 Enter output file name (press Enter to use '{input_name}'): "
         )
-        show_progress(task_name, func, inp, out)
+        show_progress(task_name, func, inp, out, **kwargs)
 
     elif choice == "2":
-        batch_convert(task_name, input_ext, output_ext, func)
+        batch_convert(task_name, input_ext, output_ext, func, **kwargs)
 
     else:
         print("❌ Invalid choice. Exiting.")
@@ -130,7 +148,14 @@ def handle_conversion(task_name, input_ext, output_ext, func):
 # =========================================
 # 🧩 CLI main
 # =========================================
+
 def main():
+    logging.basicConfig(
+        filename="convertor.log",
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s"
+    )
+
     parser = argparse.ArgumentParser(
         prog="p2w_convertor",
         description="✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!"
@@ -138,8 +163,12 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", help="Choose conversion type")
 
+    # Add format options for pdf2word
+    pdf2word_parser = subparsers.add_parser("pdf2word", help="Convert PDF → Word (.docx)")
+    pdf2word_parser.add_argument("--no-images", action="store_true", help="Do not preserve images in PDF to Word conversion")
+    pdf2word_parser.add_argument("--no-tables", action="store_true", help="Do not preserve tables in PDF to Word conversion")
+
     subparsers.add_parser("word2pdf", help="Convert Word (.docx) → PDF")
-    subparsers.add_parser("pdf2word", help="Convert PDF → Word (.docx)")
     subparsers.add_parser("xlsx2csv", help="Convert Excel (.xlsx) → CSV")
     subparsers.add_parser("csv2xlsx", help="Convert CSV → Excel (.xlsx)")
 
@@ -149,7 +178,12 @@ def main():
         handle_conversion("Word → PDF", ".docx", ".pdf", converters.word_to_pdf)
 
     elif args.command == "pdf2word":
-        handle_conversion("PDF → Word", ".pdf", ".docx", converters.pdf_to_word)
+        preserve_images = not getattr(args, "no_images", False)
+        preserve_tables = not getattr(args, "no_tables", False)
+        handle_conversion(
+            "PDF → Word", ".pdf", ".docx",
+            lambda inp, out: converters.pdf_to_word(inp, out, preserve_images=preserve_images, preserve_tables=preserve_tables)
+        )
 
     elif args.command == "xlsx2csv":
         handle_conversion("Excel → CSV", ".xlsx", ".csv", converters.xlsx_to_csv)

@@ -45,6 +45,15 @@
         "documentation": {}
     },
     {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
         "label": "tqdm",
         "importPath": "tqdm",
         "description": "tqdm",
@@ -62,14 +71,6 @@
         "documentation": {}
     },
     {
-        "label": "Document",
-        "importPath": "docx",
-        "description": "docx",
-        "isExtraImport": true,
-        "detail": "docx",
-        "documentation": {}
-    },
-    {
         "label": "convert",
         "importPath": "docx2pdf",
         "description": "docx2pdf",
@@ -78,12 +79,35 @@
         "documentation": {}
     },
     {
-        "label": "pdfplumber",
-        "kind": 6,
+        "label": "Converter",
+        "importPath": "pdf2docx",
+        "description": "pdf2docx",
         "isExtraImport": true,
-        "importPath": "pdfplumber",
-        "description": "pdfplumber",
-        "detail": "pdfplumber",
+        "detail": "pdf2docx",
+        "documentation": {}
+    },
+    {
+        "label": "QtWidgets",
+        "importPath": "PyQt5",
+        "description": "PyQt5",
+        "isExtraImport": true,
+        "detail": "PyQt5",
+        "documentation": {}
+    },
+    {
+        "label": "QtGui",
+        "importPath": "PyQt5",
+        "description": "PyQt5",
+        "isExtraImport": true,
+        "detail": "PyQt5",
+        "documentation": {}
+    },
+    {
+        "label": "QtCore",
+        "importPath": "PyQt5",
+        "description": "PyQt5",
+        "isExtraImport": true,
+        "detail": "PyQt5",
         "documentation": {}
     },
     {
@@ -143,7 +167,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def batch_convert(task_name, extension, output_ext, func):\n    folder, files = get_folder_and_files(extension)\n    print(f\"🔄 Starting batch {task_name} conversion...\\n\")\n    for f in files:\n        inp = os.path.join(folder, f)\n        out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)\n        show_progress(f\"{f[:25]} → {output_ext}\", func, inp, out)\n    print(f\"\\n✅ Batch conversion complete! Files saved in: {folder}\\n\")\n# =========================================\n# 🚀 Unified conversion handler",
+        "peekOfCode": "def batch_convert(task_name, extension, output_ext, func, **kwargs):\n    folder, files = get_folder_and_files(extension)\n    print(f\"🔄 Starting batch {task_name} conversion...\\n\")\n    errors = []\n    for f in files:\n        inp = os.path.join(folder, f)\n        out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)\n        try:\n            show_progress(f\"{f[:25]} → {output_ext}\", func, inp, out, **kwargs)\n        except Exception as e:",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -152,7 +176,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def handle_conversion(task_name, input_ext, output_ext, func):\n    \"\"\"Ask user for mode: single or batch.\"\"\"\n    print(\"\\n🔢 Select conversion mode:\")\n    print(\"1️⃣  Single file conversion\")\n    print(\"2️⃣  Batch folder conversion\\n\")\n    choice = input(\"👉 Enter your choice (1 or 2): \").strip()\n    if choice == \"1\":\n        inp, out = get_input_output_paths(\n            output_ext,\n            input_prompt=f\"📄 Enter input {input_ext} file path: \",",
+        "peekOfCode": "def handle_conversion(task_name, input_ext, output_ext, func, **kwargs):\n    \"\"\"Ask user for mode: single or batch.\"\"\"\n    print(\"\\n🔢 Select conversion mode:\")\n    print(\"1️⃣  Single file conversion\")\n    print(\"2️⃣  Batch folder conversion\\n\")\n    choice = input(\"👉 Enter your choice (1 or 2): \").strip()\n    if choice == \"1\":\n        inp, out = get_input_output_paths(\n            output_ext,\n            input_prompt=f\"📄 Enter input {input_ext} file path: \",",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -161,7 +185,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.cli",
         "description": "p2w_convertor.cli",
-        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Choose conversion type\")\n    subparsers.add_parser(\"word2pdf\", help=\"Convert Word (.docx) → PDF\")\n    subparsers.add_parser(\"pdf2word\", help=\"Convert PDF → Word (.docx)\")\n    subparsers.add_parser(\"xlsx2csv\", help=\"Convert Excel (.xlsx) → CSV\")\n    subparsers.add_parser(\"csv2xlsx\", help=\"Convert CSV → Excel (.xlsx)\")",
+        "peekOfCode": "def main():\n    logging.basicConfig(\n        filename=\"convertor.log\",\n        level=logging.INFO,\n        format=\"%(asctime)s [%(levelname)s] %(message)s\"\n    )\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )",
         "detail": "p2w_convertor.cli",
         "documentation": {}
     },
@@ -170,7 +194,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.converters",
         "description": "p2w_convertor.converters",
-        "peekOfCode": "def word_to_pdf(input_file, output_file):\n    convert(input_file, output_file)\ndef pdf_to_word(input_file, output_file):\n    doc = Document()\n    with pdfplumber.open(input_file) as pdf:\n        for page in pdf.pages:\n            text = page.extract_text() or \"\"\n            doc.add_paragraph(text)\n    doc.save(output_file)\ndef xlsx_to_csv(input_file, output_file):",
+        "peekOfCode": "def word_to_pdf(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.docx'):\n            raise ValueError('Input file must be a .docx file')\n        convert(input_file, output_file)\n        logging.info(f\"Converted Word to PDF: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Word to PDF: {e}\")\n        raise\ndef pdf_to_word(input_file, output_file, preserve_images=True, preserve_tables=True):",
         "detail": "p2w_convertor.converters",
         "documentation": {}
     },
@@ -179,7 +203,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.converters",
         "description": "p2w_convertor.converters",
-        "peekOfCode": "def pdf_to_word(input_file, output_file):\n    doc = Document()\n    with pdfplumber.open(input_file) as pdf:\n        for page in pdf.pages:\n            text = page.extract_text() or \"\"\n            doc.add_paragraph(text)\n    doc.save(output_file)\ndef xlsx_to_csv(input_file, output_file):\n    df = pd.read_excel(input_file)\n    df.to_csv(output_file, index=False)",
+        "peekOfCode": "def pdf_to_word(input_file, output_file, preserve_images=True, preserve_tables=True):\n    try:\n        if not input_file.lower().endswith('.pdf'):\n            raise ValueError('Input file must be a .pdf file')\n        cv = Converter(input_file)\n        # pdf2docx preserves images and tables by default, but options can be added if needed\n        cv.convert(output_file, start=0, end=None)\n        cv.close()\n        logging.info(f\"Converted PDF to Word: {input_file} -> {output_file}\")\n    except Exception as e:",
         "detail": "p2w_convertor.converters",
         "documentation": {}
     },
@@ -188,7 +212,7 @@
         "kind": 2,
         "importPath": "p2w_convertor.converters",
         "description": "p2w_convertor.converters",
-        "peekOfCode": "def xlsx_to_csv(input_file, output_file):\n    df = pd.read_excel(input_file)\n    df.to_csv(output_file, index=False)\ndef csv_to_xlsx(input_file, output_file):\n    df = pd.read_csv(input_file)\n    df.to_excel(output_file, index=False)",
+        "peekOfCode": "def xlsx_to_csv(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.xlsx'):\n            raise ValueError('Input file must be a .xlsx file')\n        df = pd.read_excel(input_file)\n        df.to_csv(output_file, index=False)\n        logging.info(f\"Converted Excel to CSV: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Excel to CSV: {e}\")\n        raise",
         "detail": "p2w_convertor.converters",
         "documentation": {}
     },
@@ -197,8 +221,26 @@
         "kind": 2,
         "importPath": "p2w_convertor.converters",
         "description": "p2w_convertor.converters",
-        "peekOfCode": "def csv_to_xlsx(input_file, output_file):\n    df = pd.read_csv(input_file)\n    df.to_excel(output_file, index=False)",
+        "peekOfCode": "def csv_to_xlsx(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.csv'):\n            raise ValueError('Input file must be a .csv file')\n        df = pd.read_csv(input_file)\n        df.to_excel(output_file, index=False)\n        logging.info(f\"Converted CSV to Excel: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting CSV to Excel: {e}\")\n        raise",
         "detail": "p2w_convertor.converters",
+        "documentation": {}
+    },
+    {
+        "label": "ConverterGUI",
+        "kind": 6,
+        "importPath": "p2w_convertor.gui",
+        "description": "p2w_convertor.gui",
+        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self):\n        super().__init__()\n        self.init_ui()\n    def init_ui(self):\n        self.setWindowTitle('File Converter')\n        self.setWindowIcon(QtGui.QIcon())\n        self.setGeometry(100, 100, 500, 350)\n        self.setStyleSheet(\"background-color: #f5f6fa;\")\n        layout = QtWidgets.QVBoxLayout()",
+        "detail": "p2w_convertor.gui",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "p2w_convertor.gui",
+        "description": "p2w_convertor.gui",
+        "peekOfCode": "def main():\n    app = QtWidgets.QApplication(sys.argv)\n    gui = ConverterGUI()\n    gui.show()\n    sys.exit(app.exec_())\nif __name__ == \"__main__\":\n    main()",
+        "detail": "p2w_convertor.gui",
         "documentation": {}
     }
 ]
