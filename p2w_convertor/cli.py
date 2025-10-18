@@ -12,8 +12,10 @@ from . import converters
 # =========================================
 # 🔇 Utility: Suppress unwanted console output
 # =========================================
+from typing import Generator, Any
+
 @contextlib.contextmanager
-def suppress_output():
+def suppress_output() -> contextlib._GeneratorContextManager:
     """Temporarily suppress stdout/stderr to hide unwanted messages."""
     with open(os.devnull, "w") as devnull:
         old_stdout, old_stderr = sys.stdout, sys.stderr
@@ -27,10 +29,7 @@ def suppress_output():
 # =========================================
 # 📊 Utility: Progress bar
 # =========================================
-# =========================================
-# 📊 Utility: Progress bar
-# =========================================
-def show_progress(task_name, func, *args, **kwargs):
+def show_progress(task_name: str, func: Any, *args: Any, **kwargs: Any) -> None:
     """Display a single, smooth progress bar."""
     print(f"\n🔄 Starting {task_name} conversion...\n")
     with tqdm(
@@ -59,7 +58,7 @@ def show_progress(task_name, func, *args, **kwargs):
 # =========================================
 # 🧭 Utility: Ask for input/output (single)
 # =========================================
-def get_input_output_paths(default_ext, input_prompt, output_prompt):
+def get_input_output_paths(default_ext: str, input_prompt: str, output_prompt: str) -> tuple[str, str]:
     """Ask user for input and output file paths."""
     inp = input(input_prompt).strip()
     if not os.path.exists(inp):
@@ -81,7 +80,7 @@ def get_input_output_paths(default_ext, input_prompt, output_prompt):
 # =========================================
 # 📁 Utility: Get folder for batch conversion
 # =========================================
-def get_folder_and_files(extension):
+def get_folder_and_files(extension: str) -> tuple[str, list[str]]:
     """Ask for folder path and get all files matching extension."""
     folder = input("📁 Enter folder path containing files: ").strip()
     if not os.path.isdir(folder):
@@ -100,7 +99,7 @@ def get_folder_and_files(extension):
 # =========================================
 # 🧠 Generic batch converter
 # =========================================
-def batch_convert(task_name, extension, output_ext, func, **kwargs):
+def batch_convert(task_name: str, extension: str, output_ext: str, func: Any, **kwargs: Any) -> None:
     folder, files = get_folder_and_files(extension)
     print(f"🔄 Starting batch {task_name} conversion...\n")
     errors = []
@@ -121,7 +120,7 @@ def batch_convert(task_name, extension, output_ext, func, **kwargs):
 # =========================================
 # 🚀 Unified conversion handler
 # =========================================
-def handle_conversion(task_name, input_ext, output_ext, func, **kwargs):
+def handle_conversion(task_name: str, input_ext: str, output_ext: str, func: Any, **kwargs: Any) -> None:
     """Ask user for mode: single or batch."""
     print("\n🔢 Select conversion mode:")
     print("1️⃣  Single file conversion")
@@ -149,7 +148,7 @@ def handle_conversion(task_name, input_ext, output_ext, func, **kwargs):
 # 🧩 CLI main
 # =========================================
 
-def main():
+def main() -> None:
     logging.basicConfig(
         filename="convertor.log",
         level=logging.INFO,
