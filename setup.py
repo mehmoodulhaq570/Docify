@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="p2w_convertor",
+    name="docify",
     version="0.1.0",
     description="Convert Word, PDF, Excel, and CSV files via CLI or GUI.",
     author="Mehmood Ul Haq",
@@ -22,10 +22,10 @@ setup(
             "p2w_convertor=p2w_convertor.cli:main",
         ],
     },
-    url="https://github.com/mehmoodulhaq570/p2w_convertor",
+    url="https://github.com/mehmoodulhaq570/docify",
     project_urls={
-        "Homepage": "https://github.com/mehmoodulhaq570/p2w_convertor",
-        "Bug Tracker": "https://github.com/mehmoodulhaq570/p2w_convertor/issues"
+        "Homepage": "https://github.com/mehmoodulhaq570/docify",
+        "Bug Tracker": "https://github.com/mehmoodulhaq570/docify/issues"
     },
     classifiers=[
         "Programming Language :: Python :: 3",

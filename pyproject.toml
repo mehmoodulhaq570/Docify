@@ -3,7 +3,7 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "p2w_convertor"
+name = "docify"
 version = "0.1.0"
 description = "Convert Word, PDF, Excel, and CSV files via CLI or GUI."
 authors = [
@@ -27,4 +27,4 @@ classifiers = [
 	"Operating System :: OS Independent"
 ]
 keywords = ["convert", "pdf", "word", "excel", "csv", "cli", "gui"]
-urls = {"Homepage" = "https://github.com/mehmoodulhaq570/p2w_convertor"}
+urls = {"Homepage" = "https://github.com/mehmoodulhaq570/docify"}

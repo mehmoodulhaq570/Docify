@@ -62,6 +62,38 @@
         "documentation": {}
     },
     {
+        "label": "Generator",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Callable",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "pandas",
         "kind": 6,
         "isExtraImport": true,
@@ -111,6 +143,23 @@
         "documentation": {}
     },
     {
+        "label": "pytest",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pytest",
+        "description": "pytest",
+        "detail": "pytest",
+        "documentation": {}
+    },
+    {
+        "label": "converters",
+        "importPath": "p2w_convertor",
+        "description": "p2w_convertor",
+        "isExtraImport": true,
+        "detail": "p2w_convertor",
+        "documentation": {}
+    },
+    {
         "label": "setup",
         "importPath": "setuptools",
         "description": "setuptools",
@@ -129,118 +178,154 @@
     {
         "label": "suppress_output",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def suppress_output():\n    \"\"\"Temporarily suppress stdout/stderr to hide unwanted messages.\"\"\"\n    with open(os.devnull, \"w\") as devnull:\n        old_stdout, old_stderr = sys.stdout, sys.stderr\n        sys.stdout, sys.stderr = devnull, devnull\n        try:\n            yield\n        finally:\n            sys.stdout, sys.stderr = old_stdout, old_stderr\n# =========================================",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def suppress_output() -> contextlib._GeneratorContextManager:\n    \"\"\"Temporarily suppress stdout/stderr to hide unwanted messages.\"\"\"\n    with open(os.devnull, \"w\") as devnull:\n        old_stdout, old_stderr = sys.stdout, sys.stderr\n        sys.stdout, sys.stderr = devnull, devnull\n        try:\n            yield\n        finally:\n            sys.stdout, sys.stderr = old_stdout, old_stderr\n# =========================================",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "show_progress",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def show_progress(task_name, func, *args, **kwargs):\n    \"\"\"Display a single, smooth progress bar.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=(\"=\", \" \"),\n        leave=False,",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def show_progress(task_name: str, func: Any, *args: Any, **kwargs: Any) -> None:\n    \"\"\"Display a single, smooth progress bar.\"\"\"\n    print(f\"\\n🔄 Starting {task_name} conversion...\\n\")\n    with tqdm(\n        total=100,\n        desc=f\"{task_name}\",\n        ncols=70,\n        bar_format=\"{desc}: [{bar}] {percentage:3.0f}%\",\n        ascii=(\"=\", \" \"),\n        leave=False,",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "get_input_output_paths",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def get_input_output_paths(default_ext, input_prompt, output_prompt):\n    \"\"\"Ask user for input and output file paths.\"\"\"\n    inp = input(input_prompt).strip()\n    if not os.path.exists(inp):\n        print(\"❌ Error: Input file not found.\")\n        sys.exit(1)\n    input_dir = os.path.dirname(inp)\n    input_name = os.path.splitext(os.path.basename(inp))[0]\n    out_name = input(output_prompt.format(input_name=input_name)).strip()\n    if not out_name:",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def get_input_output_paths(default_ext: str, input_prompt: str, output_prompt: str) -> tuple[str, str]:\n    \"\"\"Ask user for input and output file paths.\"\"\"\n    inp = input(input_prompt).strip()\n    if not os.path.exists(inp):\n        print(\"❌ Error: Input file not found.\")\n        sys.exit(1)\n    input_dir = os.path.dirname(inp)\n    input_name = os.path.splitext(os.path.basename(inp))[0]\n    out_name = input(output_prompt.format(input_name=input_name)).strip()\n    if not out_name:",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "get_folder_and_files",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def get_folder_and_files(extension):\n    \"\"\"Ask for folder path and get all files matching extension.\"\"\"\n    folder = input(\"📁 Enter folder path containing files: \").strip()\n    if not os.path.isdir(folder):\n        print(\"❌ Error: Invalid folder path.\")\n        sys.exit(1)\n    files = [f for f in os.listdir(folder) if f.lower().endswith(extension)]\n    if not files:\n        print(f\"⚠️ No {extension} files found in the specified folder.\")\n        sys.exit(0)",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def get_folder_and_files(extension: str) -> tuple[str, list[str]]:\n    \"\"\"Ask for folder path and get all files matching extension.\"\"\"\n    folder = input(\"📁 Enter folder path containing files: \").strip()\n    if not os.path.isdir(folder):\n        print(\"❌ Error: Invalid folder path.\")\n        sys.exit(1)\n    files = [f for f in os.listdir(folder) if f.lower().endswith(extension)]\n    if not files:\n        print(f\"⚠️ No {extension} files found in the specified folder.\")\n        sys.exit(0)",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "batch_convert",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def batch_convert(task_name, extension, output_ext, func, **kwargs):\n    folder, files = get_folder_and_files(extension)\n    print(f\"🔄 Starting batch {task_name} conversion...\\n\")\n    errors = []\n    for f in files:\n        inp = os.path.join(folder, f)\n        out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)\n        try:\n            show_progress(f\"{f[:25]} → {output_ext}\", func, inp, out, **kwargs)\n        except Exception as e:",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def batch_convert(task_name: str, extension: str, output_ext: str, func: Any, **kwargs: Any) -> None:\n    folder, files = get_folder_and_files(extension)\n    print(f\"🔄 Starting batch {task_name} conversion...\\n\")\n    errors = []\n    for f in files:\n        inp = os.path.join(folder, f)\n        out = os.path.join(folder, os.path.splitext(f)[0] + output_ext)\n        try:\n            show_progress(f\"{f[:25]} → {output_ext}\", func, inp, out, **kwargs)\n        except Exception as e:",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "handle_conversion",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def handle_conversion(task_name, input_ext, output_ext, func, **kwargs):\n    \"\"\"Ask user for mode: single or batch.\"\"\"\n    print(\"\\n🔢 Select conversion mode:\")\n    print(\"1️⃣  Single file conversion\")\n    print(\"2️⃣  Batch folder conversion\\n\")\n    choice = input(\"👉 Enter your choice (1 or 2): \").strip()\n    if choice == \"1\":\n        inp, out = get_input_output_paths(\n            output_ext,\n            input_prompt=f\"📄 Enter input {input_ext} file path: \",",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def handle_conversion(task_name: str, input_ext: str, output_ext: str, func: Any, **kwargs: Any) -> None:\n    \"\"\"Ask user for mode: single or batch.\"\"\"\n    print(\"\\n🔢 Select conversion mode:\")\n    print(\"1️⃣  Single file conversion\")\n    print(\"2️⃣  Batch folder conversion\\n\")\n    choice = input(\"👉 Enter your choice (1 or 2): \").strip()\n    if choice == \"1\":\n        inp, out = get_input_output_paths(\n            output_ext,\n            input_prompt=f\"📄 Enter input {input_ext} file path: \",",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "main",
         "kind": 2,
-        "importPath": "p2w_convertor.cli",
-        "description": "p2w_convertor.cli",
-        "peekOfCode": "def main():\n    logging.basicConfig(\n        filename=\"convertor.log\",\n        level=logging.INFO,\n        format=\"%(asctime)s [%(levelname)s] %(message)s\"\n    )\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )",
-        "detail": "p2w_convertor.cli",
+        "importPath": "docify.cli",
+        "description": "docify.cli",
+        "peekOfCode": "def main() -> None:\n    logging.basicConfig(\n        filename=\"convertor.log\",\n        level=logging.INFO,\n        format=\"%(asctime)s [%(levelname)s] %(message)s\"\n    )\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )",
+        "detail": "docify.cli",
         "documentation": {}
     },
     {
         "label": "word_to_pdf",
         "kind": 2,
-        "importPath": "p2w_convertor.converters",
-        "description": "p2w_convertor.converters",
-        "peekOfCode": "def word_to_pdf(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.docx'):\n            raise ValueError('Input file must be a .docx file')\n        convert(input_file, output_file)\n        logging.info(f\"Converted Word to PDF: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Word to PDF: {e}\")\n        raise\ndef pdf_to_word(input_file, output_file, preserve_images=True, preserve_tables=True):",
-        "detail": "p2w_convertor.converters",
+        "importPath": "docify.converters",
+        "description": "docify.converters",
+        "peekOfCode": "def word_to_pdf(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.docx'):\n            raise ValueError('Input file must be a .docx file')\n        convert(input_file, output_file)\n        logging.info(f\"Converted Word to PDF: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Word to PDF: {e}\")\n        raise\ndef pdf_to_word(",
+        "detail": "docify.converters",
         "documentation": {}
     },
     {
         "label": "pdf_to_word",
         "kind": 2,
-        "importPath": "p2w_convertor.converters",
-        "description": "p2w_convertor.converters",
-        "peekOfCode": "def pdf_to_word(input_file, output_file, preserve_images=True, preserve_tables=True):\n    try:\n        if not input_file.lower().endswith('.pdf'):\n            raise ValueError('Input file must be a .pdf file')\n        cv = Converter(input_file)\n        # pdf2docx preserves images and tables by default, but options can be added if needed\n        cv.convert(output_file, start=0, end=None)\n        cv.close()\n        logging.info(f\"Converted PDF to Word: {input_file} -> {output_file}\")\n    except Exception as e:",
-        "detail": "p2w_convertor.converters",
+        "importPath": "docify.converters",
+        "description": "docify.converters",
+        "peekOfCode": "def pdf_to_word(\n    input_file: str,\n    output_file: str,\n    preserve_images: bool = True,\n    preserve_tables: bool = True\n) -> None:\n    try:\n        if not input_file.lower().endswith('.pdf'):\n            raise ValueError('Input file must be a .pdf file')\n        cv = Converter(input_file)",
+        "detail": "docify.converters",
         "documentation": {}
     },
     {
         "label": "xlsx_to_csv",
         "kind": 2,
-        "importPath": "p2w_convertor.converters",
-        "description": "p2w_convertor.converters",
-        "peekOfCode": "def xlsx_to_csv(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.xlsx'):\n            raise ValueError('Input file must be a .xlsx file')\n        df = pd.read_excel(input_file)\n        df.to_csv(output_file, index=False)\n        logging.info(f\"Converted Excel to CSV: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Excel to CSV: {e}\")\n        raise",
-        "detail": "p2w_convertor.converters",
+        "importPath": "docify.converters",
+        "description": "docify.converters",
+        "peekOfCode": "def xlsx_to_csv(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.xlsx'):\n            raise ValueError('Input file must be a .xlsx file')\n        df = pd.read_excel(input_file)\n        df.to_csv(output_file, index=False)\n        logging.info(f\"Converted Excel to CSV: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Excel to CSV: {e}\")\n        raise",
+        "detail": "docify.converters",
         "documentation": {}
     },
     {
         "label": "csv_to_xlsx",
         "kind": 2,
-        "importPath": "p2w_convertor.converters",
-        "description": "p2w_convertor.converters",
-        "peekOfCode": "def csv_to_xlsx(input_file, output_file):\n    try:\n        if not input_file.lower().endswith('.csv'):\n            raise ValueError('Input file must be a .csv file')\n        df = pd.read_csv(input_file)\n        df.to_excel(output_file, index=False)\n        logging.info(f\"Converted CSV to Excel: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting CSV to Excel: {e}\")\n        raise",
-        "detail": "p2w_convertor.converters",
+        "importPath": "docify.converters",
+        "description": "docify.converters",
+        "peekOfCode": "def csv_to_xlsx(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.csv'):\n            raise ValueError('Input file must be a .csv file')\n        df = pd.read_csv(input_file)\n        df.to_excel(output_file, index=False)\n        logging.info(f\"Converted CSV to Excel: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting CSV to Excel: {e}\")\n        raise",
+        "detail": "docify.converters",
         "documentation": {}
     },
     {
         "label": "ConverterGUI",
         "kind": 6,
-        "importPath": "p2w_convertor.gui",
-        "description": "p2w_convertor.gui",
-        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self):\n        super().__init__()\n        self.init_ui()\n    def init_ui(self):\n        self.setWindowTitle('File Converter')\n        self.setWindowIcon(QtGui.QIcon())\n        self.setGeometry(100, 100, 500, 350)\n        self.setStyleSheet(\"background-color: #f5f6fa;\")\n        layout = QtWidgets.QVBoxLayout()",
-        "detail": "p2w_convertor.gui",
+        "importPath": "docify.gui",
+        "description": "docify.gui",
+        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n    def init_ui(self) -> None:\n        self.setWindowTitle('File Converter')\n        self.setWindowIcon(QtGui.QIcon())\n        self.setGeometry(100, 100, 650, 480)\n        self.setStyleSheet(\"\"\"",
+        "detail": "docify.gui",
         "documentation": {}
     },
     {
         "label": "main",
         "kind": 2,
-        "importPath": "p2w_convertor.gui",
-        "description": "p2w_convertor.gui",
-        "peekOfCode": "def main():\n    app = QtWidgets.QApplication(sys.argv)\n    gui = ConverterGUI()\n    gui.show()\n    sys.exit(app.exec_())\nif __name__ == \"__main__\":\n    main()",
-        "detail": "p2w_convertor.gui",
+        "importPath": "docify.gui",
+        "description": "docify.gui",
+        "peekOfCode": "def main() -> None:\n    app = QtWidgets.QApplication(sys.argv)\n    gui = ConverterGUI()\n    gui.show()\n    sys.exit(app.exec_())\nif __name__ == \"__main__\":\n    main()",
+        "detail": "docify.gui",
+        "documentation": {}
+    },
+    {
+        "label": "test_word_to_pdf",
+        "kind": 2,
+        "importPath": "tests.test_converters",
+        "description": "tests.test_converters",
+        "peekOfCode": "def test_word_to_pdf(tmp_path):\n    # Dummy test: just check error on wrong extension\n    with pytest.raises(ValueError):\n        converters.word_to_pdf('file.txt', 'out.pdf')\ndef test_pdf_to_word(tmp_path):\n    with pytest.raises(ValueError):\n        converters.pdf_to_word('file.txt', 'out.docx')\ndef test_xlsx_to_csv(tmp_path):\n    # Create a sample xlsx\n    df = pd.DataFrame({'a': [1,2], 'b': [3,4]})",
+        "detail": "tests.test_converters",
+        "documentation": {}
+    },
+    {
+        "label": "test_pdf_to_word",
+        "kind": 2,
+        "importPath": "tests.test_converters",
+        "description": "tests.test_converters",
+        "peekOfCode": "def test_pdf_to_word(tmp_path):\n    with pytest.raises(ValueError):\n        converters.pdf_to_word('file.txt', 'out.docx')\ndef test_xlsx_to_csv(tmp_path):\n    # Create a sample xlsx\n    df = pd.DataFrame({'a': [1,2], 'b': [3,4]})\n    xlsx = tmp_path / 'test.xlsx'\n    df.to_excel(xlsx, index=False)\n    csv = tmp_path / 'test.csv'\n    converters.xlsx_to_csv(str(xlsx), str(csv))",
+        "detail": "tests.test_converters",
+        "documentation": {}
+    },
+    {
+        "label": "test_xlsx_to_csv",
+        "kind": 2,
+        "importPath": "tests.test_converters",
+        "description": "tests.test_converters",
+        "peekOfCode": "def test_xlsx_to_csv(tmp_path):\n    # Create a sample xlsx\n    df = pd.DataFrame({'a': [1,2], 'b': [3,4]})\n    xlsx = tmp_path / 'test.xlsx'\n    df.to_excel(xlsx, index=False)\n    csv = tmp_path / 'test.csv'\n    converters.xlsx_to_csv(str(xlsx), str(csv))\n    assert os.path.exists(csv)\n    df2 = pd.read_csv(csv)\n    assert df2.equals(df)",
+        "detail": "tests.test_converters",
+        "documentation": {}
+    },
+    {
+        "label": "test_csv_to_xlsx",
+        "kind": 2,
+        "importPath": "tests.test_converters",
+        "description": "tests.test_converters",
+        "peekOfCode": "def test_csv_to_xlsx(tmp_path):\n    df = pd.DataFrame({'a': [1,2], 'b': [3,4]})\n    csv = tmp_path / 'test.csv'\n    df.to_csv(csv, index=False)\n    xlsx = tmp_path / 'test.xlsx'\n    converters.csv_to_xlsx(str(csv), str(xlsx))\n    assert os.path.exists(xlsx)\n    df2 = pd.read_excel(xlsx)\n    assert df2.equals(df)",
+        "detail": "tests.test_converters",
         "documentation": {}
     }
 ]
