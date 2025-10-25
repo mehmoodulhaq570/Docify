@@ -156,7 +156,7 @@ def main() -> None:
     )
 
     parser = argparse.ArgumentParser(
-        prog="p2w_convertor",
+        prog="Docify",
         description="✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!"
     )
 

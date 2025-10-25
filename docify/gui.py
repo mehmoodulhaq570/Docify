@@ -17,7 +17,7 @@ class ConverterGUI(QtWidgets.QWidget):
         self._progress_timer: QtCore.QTimer | None = None
 
     def init_ui(self) -> None:
-        self.setWindowTitle('File Converter')
+        self.setWindowTitle('Docify - File Converter')
         self.setWindowIcon(QtGui.QIcon())
         self.setGeometry(100, 100, 650, 480)
         self.setStyleSheet("""
@@ -106,22 +106,24 @@ class ConverterGUI(QtWidgets.QWidget):
         btns_layout.setSpacing(18)
         btn_word2pdf = QtWidgets.QPushButton('Word → PDF')
         btn_word2pdf.setStyleSheet(self.button_style(color="#00b894"))
-        btn_word2pdf.clicked.connect(lambda: self.run_conversion(converters.word_to_pdf))
+        # expected output extension: .pdf
+        btn_word2pdf.clicked.connect(lambda: self.run_conversion(converters.word_to_pdf, '.pdf'))
         btns_layout.addWidget(btn_word2pdf)
 
         btn_pdf2word = QtWidgets.QPushButton('PDF → Word')
         btn_pdf2word.setStyleSheet(self.button_style(color="#0984e3"))
-        btn_pdf2word.clicked.connect(lambda: self.run_conversion(converters.pdf_to_word))
+        # Wrap pdf_to_word to pass preserve flags and set output ext to .docx
+        btn_pdf2word.clicked.connect(lambda: self.run_conversion(lambda a, b: converters.pdf_to_word(a, b, preserve_images=True, preserve_tables=True), '.docx'))
         btns_layout.addWidget(btn_pdf2word)
 
         btn_xlsx2csv = QtWidgets.QPushButton('Excel → CSV')
         btn_xlsx2csv.setStyleSheet(self.button_style(color="#fdcb6e"))
-        btn_xlsx2csv.clicked.connect(lambda: self.run_conversion(converters.xlsx_to_csv))
+        btn_xlsx2csv.clicked.connect(lambda: self.run_conversion(converters.xlsx_to_csv, '.csv'))
         btns_layout.addWidget(btn_xlsx2csv)
 
         btn_csv2xlsx = QtWidgets.QPushButton('CSV → Excel')
         btn_csv2xlsx.setStyleSheet(self.button_style(color="#e17055"))
-        btn_csv2xlsx.clicked.connect(lambda: self.run_conversion(converters.csv_to_xlsx))
+        btn_csv2xlsx.clicked.connect(lambda: self.run_conversion(converters.csv_to_xlsx, '.xlsx'))
         btns_layout.addWidget(btn_csv2xlsx)
 
         layout.addLayout(btns_layout)
@@ -168,7 +170,7 @@ class ConverterGUI(QtWidgets.QWidget):
         if path:
             self.output_path.setText(path)
 
-    def run_conversion(self, func: Callable[[str, str], None]) -> None:
+    def run_conversion(self, func: Callable[[str, str], None], output_ext: str | None = None) -> None:
         inp = self.input_path.text()
         out = self.output_path.text()
         if not inp or not out:
@@ -176,6 +178,14 @@ class ConverterGUI(QtWidgets.QWidget):
             self.status.setStyleSheet("color: #e84118;")
             QtWidgets.QMessageBox.warning(self, "Missing File", "Please select both input and output files.")
             return
+        # If the user did not specify an extension for output, append the expected one.
+        if output_ext:
+            root, ext = os.path.splitext(out)
+            if not ext:
+                out = out + output_ext
+            elif ext.lower() != output_ext.lower():
+                # replace extension to match selected conversion
+                out = root + output_ext
         # Prepare UI for conversion
         self.status.setText('Converting...')
         self.status.setStyleSheet("color: #353b48; font-size: 15px;")

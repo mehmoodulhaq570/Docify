@@ -78,14 +78,6 @@
         "documentation": {}
     },
     {
-        "label": "Any",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
         "label": "Callable",
         "importPath": "typing",
         "description": "typing",
@@ -124,6 +116,40 @@
         "description": "pdf2docx",
         "isExtraImport": true,
         "detail": "pdf2docx",
+        "documentation": {}
+    },
+    {
+        "label": "pdfplumber",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pdfplumber",
+        "description": "pdfplumber",
+        "detail": "pdfplumber",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "docx",
+        "description": "docx",
+        "isExtraImport": true,
+        "detail": "docx",
+        "documentation": {}
+    },
+    {
+        "label": "tempfile",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tempfile",
+        "description": "tempfile",
+        "detail": "tempfile",
+        "documentation": {}
+    },
+    {
+        "label": "deepcopy",
+        "importPath": "copy",
+        "description": "copy",
+        "isExtraImport": true,
+        "detail": "copy",
         "documentation": {}
     },
     {
@@ -242,7 +268,7 @@
         "kind": 2,
         "importPath": "docify.cli",
         "description": "docify.cli",
-        "peekOfCode": "def main() -> None:\n    logging.basicConfig(\n        filename=\"convertor.log\",\n        level=logging.INFO,\n        format=\"%(asctime)s [%(levelname)s] %(message)s\"\n    )\n    parser = argparse.ArgumentParser(\n        prog=\"p2w_convertor\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )",
+        "peekOfCode": "def main() -> None:\n    logging.basicConfig(\n        filename=\"convertor.log\",\n        level=logging.INFO,\n        format=\"%(asctime)s [%(levelname)s] %(message)s\"\n    )\n    parser = argparse.ArgumentParser(\n        prog=\"Docify\",\n        description=\"✨ Convert Word ↔ PDF and Excel ↔ CSV files easily!\"\n    )",
         "detail": "docify.cli",
         "documentation": {}
     },
@@ -287,7 +313,7 @@
         "kind": 6,
         "importPath": "docify.gui",
         "description": "docify.gui",
-        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n        # placeholders for worker thread and progress timer\n        self._worker_thread: QtCore.QThread | None = None\n        self._progress_timer: QtCore.QTimer | None = None\n    def init_ui(self) -> None:\n        self.setWindowTitle('File Converter')",
+        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n        # placeholders for worker thread and progress timer\n        self._worker_thread: QtCore.QThread | None = None\n        self._progress_timer: QtCore.QTimer | None = None\n    def init_ui(self) -> None:\n        self.setWindowTitle('Docify - File Converter')",
         "detail": "docify.gui",
         "documentation": {}
     },
