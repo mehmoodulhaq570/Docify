@@ -5,12 +5,16 @@ import os
 from . import converters
 
 from typing import Callable
+from typing import Any
 
 class ConverterGUI(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.init_ui()
         self.setAcceptDrops(True)
+        # placeholders for worker thread and progress timer
+        self._worker_thread: QtCore.QThread | None = None
+        self._progress_timer: QtCore.QTimer | None = None
 
     def init_ui(self) -> None:
         self.setWindowTitle('File Converter')
@@ -30,7 +34,13 @@ class ConverterGUI(QtWidgets.QWidget):
         title = QtWidgets.QLabel('File Converter')
         title.setFont(QtGui.QFont('Segoe UI', 28, QtGui.QFont.Bold))
         title.setAlignment(QtCore.Qt.AlignCenter)
-        title.setStyleSheet("color: #1e272e; margin-bottom: 18px; text-shadow: 1px 1px 2px #b2bec3;")
+        title.setStyleSheet("color: #1e272e; margin-bottom: 18px;")
+        # Use a QGraphicsDropShadowEffect instead of CSS text-shadow (Qt stylesheet does not support text-shadow)
+        shadow = QtWidgets.QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(8)
+        shadow.setOffset(1, 1)
+        shadow.setColor(QtGui.QColor('#b2bec3'))
+        title.setGraphicsEffect(shadow)
         layout.addWidget(title)
 
         # Input file row
@@ -72,6 +82,25 @@ class ConverterGUI(QtWidgets.QWidget):
         self.status.setAlignment(QtCore.Qt.AlignCenter)
         self.status.setStyleSheet("color: #353b48; margin: 16px; font-size: 15px;")
         layout.addWidget(self.status)
+
+        # Progress bar + numeric percent label (hidden until a conversion starts)
+        progress_row = QtWidgets.QHBoxLayout()
+        self.progress_bar = QtWidgets.QProgressBar()
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setFixedHeight(14)
+        self.progress_bar.setVisible(False)
+        progress_row.addWidget(self.progress_bar)
+
+        self.percent_label = QtWidgets.QLabel('')
+        self.percent_label.setFixedWidth(60)
+        self.percent_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.percent_label.setStyleSheet("color: #353b48; font-size: 14px; margin-left: 8px;")
+        self.percent_label.setVisible(False)
+        progress_row.addWidget(self.percent_label)
+
+        layout.addLayout(progress_row)
 
         btns_layout = QtWidgets.QHBoxLayout()
         btns_layout.setSpacing(18)
@@ -120,13 +149,12 @@ class ConverterGUI(QtWidgets.QWidget):
                 "QPushButton {"
                 "background-color: #636e72; color: #fff; border-radius: 8px; padding: 8px 22px;"
                 "font-size: 15px; font-weight: 500; margin: 2px;"
-                "box-shadow: 0 2px 8px #b2bec3;"
                 "}"
                 "QPushButton:hover {background-color: #2d3436;}"
             )
         return (
             f"QPushButton {{background-color: {color}; color: #fff; border-radius: 12px; padding: 12px 28px;"
-            "font-size: 16px; font-weight: 600; margin: 2px; box-shadow: 0 2px 8px #b2bec3; border: none;}"
+            "font-size: 16px; font-weight: 600; margin: 2px; border: none;}"
             f"QPushButton:hover {{background-color: #222f3e; color: #fff;}}"
         )
 
@@ -148,18 +176,86 @@ class ConverterGUI(QtWidgets.QWidget):
             self.status.setStyleSheet("color: #e84118;")
             QtWidgets.QMessageBox.warning(self, "Missing File", "Please select both input and output files.")
             return
+        # Prepare UI for conversion
         self.status.setText('Converting...')
-        self.status.setStyleSheet("color: #353b48;")
+        self.status.setStyleSheet("color: #353b48; font-size: 15px;")
+        self.progress_bar.setValue(0)
+        self.progress_bar.setVisible(True)
+        self.percent_label.setText('0%')
+        self.percent_label.setVisible(True)
         QtCore.QCoreApplication.processEvents()
-        try:
-            func(inp, out)
-            self.status.setText(f'Success: {os.path.basename(out)}')
-            self.status.setStyleSheet("color: #44bd32;")
-            QtWidgets.QMessageBox.information(self, "Conversion Complete", f"File saved as: {os.path.basename(out)}")
-        except Exception as e:
-            self.status.setText(f'Error: {e}')
-            self.status.setStyleSheet("color: #e84118;")
-            QtWidgets.QMessageBox.critical(self, "Conversion Error", str(e))
+
+        # Disable buttons while running
+        for btn in self.findChildren(QtWidgets.QPushButton):
+            btn.setEnabled(False)
+
+        # Worker thread to run the blocking conversion function
+        class ConversionWorker(QtCore.QThread):
+            finished_signal = QtCore.pyqtSignal(bool, str)
+
+            def __init__(self, fn: Any, a: str, b: str) -> None:
+                super().__init__()
+                self.fn = fn
+                self.a = a
+                self.b = b
+
+            def run(self) -> None:
+                try:
+                    self.fn(self.a, self.b)
+                    self.finished_signal.emit(True, os.path.basename(self.b))
+                except Exception as exc:  # noqa: BLE001 - keep broad catch to relay back to UI
+                    self.finished_signal.emit(False, str(exc))
+
+        # Create and start worker
+        worker = ConversionWorker(func, inp, out)
+        self._worker_thread = worker
+
+        # Timer to animate progress while worker is running
+        timer = QtCore.QTimer(self)
+        self._progress_timer = timer
+        timer.setInterval(60)
+
+        def advance_progress() -> None:
+            val = self.progress_bar.value()
+            if val < 95:
+                # gently step forward
+                self.progress_bar.setValue(val + 3)
+                self.percent_label.setText(f"{self.progress_bar.value()}%")
+
+        timer.timeout.connect(advance_progress)
+
+        def on_finished(success: bool, message: str) -> None:
+            # stop timer and set progress to complete
+            if self._progress_timer and self._progress_timer.isActive():
+                self._progress_timer.stop()
+            self.progress_bar.setValue(100)
+            self.percent_label.setText('100%')
+
+            # Update status and font size on success or error
+            if success:
+                self.status.setText(f'Success: {message}')
+                # Make success message slightly larger and bold
+                self.status.setStyleSheet("color: #44bd32; font-size: 17px; font-weight: 600; margin: 16px;")
+                QtWidgets.QMessageBox.information(self, "Conversion Complete", f"File saved as: {message}")
+            else:
+                self.status.setText(f'Error: {message}')
+                self.status.setStyleSheet("color: #e84118; font-size: 15px; margin: 16px;")
+                QtWidgets.QMessageBox.critical(self, "Conversion Error", message)
+
+            # Re-enable buttons
+            for btn in self.findChildren(QtWidgets.QPushButton):
+                btn.setEnabled(True)
+
+            # hide progress after a short delay
+            QtCore.QTimer.singleShot(900, lambda: (self.progress_bar.setVisible(False), self.percent_label.setVisible(False)))
+
+            # cleanup
+            self._worker_thread = None
+            self._progress_timer = None
+
+        worker.finished_signal.connect(on_finished)
+        timer.start()
+        worker.start()
 
 def main() -> None:
     app = QtWidgets.QApplication(sys.argv)

@@ -94,6 +94,14 @@
         "documentation": {}
     },
     {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "pandas",
         "kind": 6,
         "isExtraImport": true,
@@ -279,7 +287,7 @@
         "kind": 6,
         "importPath": "docify.gui",
         "description": "docify.gui",
-        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n    def init_ui(self) -> None:\n        self.setWindowTitle('File Converter')\n        self.setWindowIcon(QtGui.QIcon())\n        self.setGeometry(100, 100, 650, 480)\n        self.setStyleSheet(\"\"\"",
+        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n        # placeholders for worker thread and progress timer\n        self._worker_thread: QtCore.QThread | None = None\n        self._progress_timer: QtCore.QTimer | None = None\n    def init_ui(self) -> None:\n        self.setWindowTitle('File Converter')",
         "detail": "docify.gui",
         "documentation": {}
     },
