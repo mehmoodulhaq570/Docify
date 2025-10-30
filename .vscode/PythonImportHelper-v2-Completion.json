@@ -277,7 +277,7 @@
         "kind": 2,
         "importPath": "docify.converters",
         "description": "docify.converters",
-        "peekOfCode": "def word_to_pdf(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.docx'):\n            raise ValueError('Input file must be a .docx file')\n        convert(input_file, output_file)\n        logging.info(f\"Converted Word to PDF: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Word to PDF: {e}\")\n        raise\ndef pdf_to_word(",
+        "peekOfCode": "def word_to_pdf(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith(\".docx\"):\n            raise ValueError(\"Input file must be a .docx file\")\n        convert(input_file, output_file)\n        logging.info(f\"Converted Word to PDF: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Word to PDF: {e}\")\n        raise\ndef pdf_to_word(",
         "detail": "docify.converters",
         "documentation": {}
     },
@@ -286,7 +286,7 @@
         "kind": 2,
         "importPath": "docify.converters",
         "description": "docify.converters",
-        "peekOfCode": "def pdf_to_word(\n    input_file: str,\n    output_file: str,\n    preserve_images: bool = True,\n    preserve_tables: bool = True\n) -> None:\n    try:\n        if not input_file.lower().endswith('.pdf'):\n            raise ValueError('Input file must be a .pdf file')\n        cv = Converter(input_file)",
+        "peekOfCode": "def pdf_to_word(\n    input_file: str,\n    output_file: str,\n    preserve_images: bool = True,\n    preserve_tables: bool = True,\n    prefer_word: bool = False,\n) -> None:\n    try:\n        if not input_file.lower().endswith(\".pdf\"):\n            raise ValueError(\"Input file must be a .pdf file\")",
         "detail": "docify.converters",
         "documentation": {}
     },
@@ -295,7 +295,7 @@
         "kind": 2,
         "importPath": "docify.converters",
         "description": "docify.converters",
-        "peekOfCode": "def xlsx_to_csv(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.xlsx'):\n            raise ValueError('Input file must be a .xlsx file')\n        df = pd.read_excel(input_file)\n        df.to_csv(output_file, index=False)\n        logging.info(f\"Converted Excel to CSV: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Excel to CSV: {e}\")\n        raise",
+        "peekOfCode": "def xlsx_to_csv(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith(\".xlsx\"):\n            raise ValueError(\"Input file must be a .xlsx file\")\n        df = pd.read_excel(input_file)\n        df.to_csv(output_file, index=False)\n        logging.info(f\"Converted Excel to CSV: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting Excel to CSV: {e}\")\n        raise",
         "detail": "docify.converters",
         "documentation": {}
     },
@@ -304,7 +304,7 @@
         "kind": 2,
         "importPath": "docify.converters",
         "description": "docify.converters",
-        "peekOfCode": "def csv_to_xlsx(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith('.csv'):\n            raise ValueError('Input file must be a .csv file')\n        df = pd.read_csv(input_file)\n        df.to_excel(output_file, index=False)\n        logging.info(f\"Converted CSV to Excel: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting CSV to Excel: {e}\")\n        raise",
+        "peekOfCode": "def csv_to_xlsx(input_file: str, output_file: str) -> None:\n    try:\n        if not input_file.lower().endswith(\".csv\"):\n            raise ValueError(\"Input file must be a .csv file\")\n        df = pd.read_csv(input_file)\n        df.to_excel(output_file, index=False)\n        logging.info(f\"Converted CSV to Excel: {input_file} -> {output_file}\")\n    except Exception as e:\n        logging.error(f\"Error converting CSV to Excel: {e}\")\n        raise",
         "detail": "docify.converters",
         "documentation": {}
     },
@@ -313,7 +313,7 @@
         "kind": 6,
         "importPath": "docify.gui",
         "description": "docify.gui",
-        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n        # placeholders for worker thread and progress timer\n        self._worker_thread: QtCore.QThread | None = None\n        self._progress_timer: QtCore.QTimer | None = None\n    def init_ui(self) -> None:\n        self.setWindowTitle('Docify - File Converter')",
+        "peekOfCode": "class ConverterGUI(QtWidgets.QWidget):\n    def __init__(self) -> None:\n        super().__init__()\n        self.init_ui()\n        self.setAcceptDrops(True)\n        # placeholders for worker thread and progress timer\n        self._worker_thread: QtCore.QThread | None = None\n        self._progress_timer: QtCore.QTimer | None = None\n    def init_ui(self) -> None:\n        self.setWindowTitle(\"Docify - File Converter\")",
         "detail": "docify.gui",
         "documentation": {}
     },

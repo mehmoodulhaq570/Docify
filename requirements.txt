@@ -5,3 +5,4 @@ pdfplumber
 openpyxl
 pdf2docx
 PyQt5
+pywin32
